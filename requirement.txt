@@ -1,0 +1,8 @@
+django
+psycopg2-binary
+celery
+redis
+django-celery-beat
+Pillow
+transliterate
+python-dotenv
