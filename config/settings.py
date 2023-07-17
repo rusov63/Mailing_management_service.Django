@@ -134,26 +134,26 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.yahoo.com'
 EMAIL_PORT = 465 # SSL
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'rusov63@yahoo.com'
-EMAIL_HOST_PASSWORD = 'igcyytovihfgeidy' # временный пароль для отправки писем
+EMAIL_HOST_USER = os.getenv('@'),
+EMAIL_HOST_PASSWORD = os.getenv('@PASS'),
 EMAIL_SERVER = EMAIL_HOST_USER
 EMAIL_SERVER = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Celery settings
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Moscow'
 
-#CACHE
-CACHE_ENABLED = os.getenv('CACHE_ENABLED') == True
+# Cache redis
+CACHE_ENABLED = True
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.getenv("CACHES_LOCATION"),
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
     }
 }
