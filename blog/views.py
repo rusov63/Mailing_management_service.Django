@@ -4,15 +4,15 @@ from django.views import generic
 from django.utils.text import slugify
 from transliterate import translit
 from blog.forms import PostForm
-from blog.models import Post
 from blog.services import get_cache_detail_post
+from blog.models import Post
 
 
 class PostListView(generic.ListView):
     """Представление для просмотра всех постов"""
     model = Post
     extra_context = {
-        "title": "Лучшие загородные отели Санкт-Петербурга"
+        "title": "НОВОСТИ HONDA"
     }
 
     def get_queryset(self):

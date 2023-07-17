@@ -1,14 +1,35 @@
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.views import generic
 from mailing.forms import ClientForm, MailingForm
 from mailing.models import *
-from mailing.services import MessageService, delete_task, send_mailing
+from mailing.services.services import MessageService, delete_task, send_mailing
+
+from random import sample
+from django.views.generic import TemplateView, DetailView, ListView, CreateView, UpdateView, DeleteView
+from blog.models import Post
+from mailing.services.services2 import get_count_mailing, get_active_mailing, get_unique_clients
 
 
-class MailingListView(LoginRequiredMixin, generic.ListView):
+class IndexView(TemplateView):
+    """Представление главной страницы сервиса"""
+    extra_context = {
+        'title': 'HONDATA'
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_posts = list(Post.objects.all())
+        context['random_post'] = sample(all_posts, min(3, len(all_posts)))
+        context['count_mailing'] = get_count_mailing()
+        context['active_mailing'] = get_active_mailing()
+        context['unique_clients'] = get_unique_clients()
+
+        return context
+
+
+
+class MailingListView(LoginRequiredMixin, ListView):
     """Представление для просмотра рассылок"""
     model = Mailing
     extra_context = {'title': 'Рассылки'}
@@ -25,7 +46,7 @@ class MailingListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
 
-class MailingCreateView(LoginRequiredMixin, generic.CreateView):
+class MailingCreateView(LoginRequiredMixin, CreateView):
     """Представление для создание рассылки"""
     model = Mailing
     form_class = MailingForm
@@ -56,14 +77,14 @@ class MailingCreateView(LoginRequiredMixin, generic.CreateView):
         return super(MailingCreateView, self).form_valid(form)
 
 
-class MailingUpdateView(LoginRequiredMixin, generic.UpdateView):
+class MailingUpdateView(LoginRequiredMixin, UpdateView):
     """Представление для изменения рассылки"""
     model = Mailing
     form_class = MailingForm
     success_url = reverse_lazy('mailing:mailing_list')
 
 
-class MailingDeleteView(LoginRequiredMixin, generic.DeleteView):
+class MailingDeleteView(LoginRequiredMixin, DeleteView):
     """Представление для удаления рассылки"""
     model = Mailing
     success_url = reverse_lazy('mailing:mailing_list')
@@ -85,7 +106,7 @@ def toggle_status(request, pk):
     return redirect(reverse('mailing:mailing_list'))
 
 
-class ClientListView(LoginRequiredMixin, generic.ListView):
+class ClientListView(LoginRequiredMixin, ListView):
     """Представление для просмотра клиентов"""
     model = Client
     extra_context = {'title': 'Клиенты'}
@@ -102,12 +123,12 @@ class ClientListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
 
-class ClientDetailView(LoginRequiredMixin, generic.DetailView):
+class ClientDetailView(LoginRequiredMixin, DetailView):
     """Представление для просмотра конкретного клиента"""
     model = Client
 
 
-class ClientCreateView(LoginRequiredMixin, generic.CreateView):
+class ClientCreateView(LoginRequiredMixin, CreateView):
     """Представление для создания клиента"""
     model = Client
     form_class = ClientForm
@@ -120,21 +141,21 @@ class ClientCreateView(LoginRequiredMixin, generic.CreateView):
         return super(ClientCreateView, self).form_valid(form)
 
 
-class ClientUpdateView(LoginRequiredMixin, generic.UpdateView):
+class ClientUpdateView(LoginRequiredMixin, UpdateView):
     """Представление для изменения клиента"""
     model = Client
     form_class = ClientForm
     success_url = reverse_lazy('mailing:client_list')
 
 
-class ClientDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+class ClientDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """Представление для удаления клиента"""
     model = Client
     success_url = reverse_lazy('mailing:client_list')
     permission_required = 'mailing.delete_client'
 
 
-class MailingLogListView(LoginRequiredMixin, generic.ListView):
+class MailingLogListView(LoginRequiredMixin, ListView):
     """Представление для просмотра всех попыток рассылок"""
     model = MailingLogs
 
