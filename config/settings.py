@@ -10,8 +10,7 @@ load_dotenv()
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8fb1v&#=9=vec79c=ri%^3*x3_eh#l#kh%&d!)=7&qqx_*jzjd'
-
+SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -72,11 +71,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('CourseworkDjango'),
-        'USER': os.getenv('User_SQL'),
-        'PASSWORD': os.getenv('Pass_SQL'),
-        'HOST': os.getenv('Host_SQL'),
-        'PORT': os.getenv('Port_SQL'),
+        'NAME': os.getenv('NAME_SQL'),
+        'USER': os.getenv('USER_SQL'),
+        'PASSWORD': os.getenv('PASS_SQL'),
+        'HOST': os.getenv('HOST_SQL'),
+        'PORT': os.getenv('PORT_SQL'),
     }
 }
 
@@ -134,15 +133,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.yahoo.com'
 EMAIL_PORT = 465 # SSL
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = os.getenv('@')
-EMAIL_HOST_PASSWORD = os.getenv('@PASS')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_SERVER = EMAIL_HOST_USER
 EMAIL_SERVER = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Celery settings
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -150,10 +149,10 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Moscow'
 
 # Cache redis
-CACHE_ENABLED = True
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == True
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379',
+        'LOCATION': os.getenv('CACHES_LOCATION'),
     }
 }
