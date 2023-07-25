@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 from mailing.models import Mailing
-from mailing.services import send_mailing
+from mailing.services.services import send_mailing
 
 
 class Command(BaseCommand):
